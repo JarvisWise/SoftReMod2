@@ -154,22 +154,12 @@ public class ShoppingCart {
     public String getFormattedTicketTable(double total){
         if (items.size() == 0)
             return "No items.";
-        List<String[]> lines = new ArrayList<String[]>();
+
         String[] header = {"#","Item","Price","Quan.","Discount","Total"};
         int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
         // formatting each line
-        int index = 0;
-        for (Item item : items) {
-            lines.add(new String[]{
-                    String.valueOf(++index),
-                    item.getTitle(),
-                    MONEY.format(item.getPrice()),
-                    String.valueOf(item.getQuantity()),
-                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
-                    MONEY.format(item.getTotalPrice())
-            });
-        }
-        String[] footer = { String.valueOf(index),"","","","", MONEY.format(total) };
+        List<String[]> lines = convertItemsToTableLines();
+        String[] footer = { String.valueOf(items.size()),"","","","", MONEY.format(total) };
         // formatting table
         // column max length
         int[] width = new int[]{0,0,0,0,0,0};
@@ -199,6 +189,23 @@ public class ShoppingCart {
         appendFormattedLine(sb, footer, align, width, false);
         return sb.toString();
     }
+
+    private List<String[]> convertItemsToTableLines() {
+        List<String[]> lines = new ArrayList<>();
+        int index = 0;
+        for (Item item : items) {
+            lines.add(new String[]{
+                    String.valueOf(++index),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
+                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
+                    MONEY.format(item.getTotalPrice())
+            });
+        }
+        return lines;
+    }
+
 
     /** item info */
     private static class Item{
